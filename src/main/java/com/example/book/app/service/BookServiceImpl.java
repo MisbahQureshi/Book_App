@@ -39,15 +39,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto update(Long id, BookDto dto) {
-        Book existing = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found: " + id));
 
-        existing.setTitle(dto.getTitle());
-        existing.setAuthor(dto.getAuthor());
-        existing.setPublishedYear(dto.getPublishedYear());
-
-        Book saved = repo.save(existing);
-        return mapper.toDto(saved);
+        int updated = repo.updateBook(id, dto.getTitle(), dto.getAuthor(), dto.getPublishedYear());
+        if(updated == 0) throw new RuntimeException("Book not found " + id);
+        dto.setId(id);
+        return dto;
     }
 
     @Override
